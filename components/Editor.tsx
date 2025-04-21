@@ -94,22 +94,24 @@ export default function Editor({ mediaElement, setMediaElement }: EditorProps) {
   ]);
 
   // Handle play/pause
-  const handlePlayPause = () => {
-    const video = mediaRef.current;
-    if (!video || mediaElement.type !== "video") return;
+const handlePlayPause = useCallback(() => {
+  const video = mediaRef.current;
+  if (!video || mediaElement.type !== "video") return;
 
-    if (!isPlaying) {
-      // If we're at or past the end, reset to start
-      if (currentTime >= mediaElement.endTime) {
-        setCurrentTime(mediaElement.startTime);
-      }
-      video.style.opacity = "1"; // Ensure visibility when starting playback
-      video.play().catch(console.error);
-    } else {
-      video.pause();
+  const isAtEnd = currentTime >= mediaElement.endTime;
+
+  if (!isPlaying) {
+    if (isAtEnd) {
+      setCurrentTime(mediaElement.startTime);
     }
-    setIsPlaying(!isPlaying);
-  };
+    video.style.opacity = "1";
+    video.play().catch(console.error);
+  } else {
+    video.pause();
+  }
+
+  setIsPlaying(prev => !prev);
+}, [mediaRef, mediaElement, isPlaying, currentTime, setCurrentTime]);
 
   // Handle progress bar interaction
   const handleProgressMouseDown = (e: React.MouseEvent) => {
