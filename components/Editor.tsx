@@ -26,12 +26,13 @@ export default function Editor({ mediaElement, setMediaElement }: EditorProps) {
   const timerRef = useRef<number>();
 
   // Format time as MM:SS.ms (00:01.4)
-  const formatTime = (time: number) => {
+  
+  const formatTime =usecallback( (time: number) => {
     const minutes = Math.floor(time / 60).toString().padStart(2, '0');
     const seconds = Math.floor(time % 60).toString().padStart(2, '0');
     const milliseconds = Math.floor((time % 1) * 10).toString();
     return `${minutes}:${seconds}.${milliseconds}`;
-  };
+  },[time]);
 
   // Calculate progress percentage
   const progress =
